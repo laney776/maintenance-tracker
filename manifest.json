@@ -1,0 +1,16 @@
+{
+  "name": "E92 Servicebook — BMW 325d M57",
+  "short_name": "E92 Servicebook",
+  "description": "Private maintenance planner and service log for a BMW E92 325d M57.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1419",
+  "theme_color": "#0d1419",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

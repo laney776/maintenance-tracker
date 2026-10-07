@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1419">
+  <meta name="description" content="A private, offline-first maintenance log and planner for your BMW E92 325d M57.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="E92 Servicebook">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>E92 Servicebook</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#overview" aria-label="E92 Servicebook home">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span class="brand-copy"><strong>E92 <em>Servicebook</em></strong><small>MAINTENANCE CONTROL</small></span>
+      </a>
+      <div class="topbar-right">
+        <span class="local-badge"><span class="status-dot"></span> Private &amp; on this device</span>
+        <button class="icon-button" id="installBtn" type="button" title="Install app" hidden aria-label="Install app">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 16v4h14v-4"/></svg>
+        </button>
+        <button class="avatar" id="vehicleMenuBtn" type="button" aria-label="Open vehicle profile">E</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" aria-label="Main navigation">
+        <div class="side-label">WORKSPACE</div>
+        <button class="nav-item active" data-view="overview" type="button"><span class="nav-icon">◫</span> Overview</button>
+        <button class="nav-item" data-view="plan" type="button"><span class="nav-icon">◷</span> Maintenance plan <span class="nav-count" id="planNavCount">0</span></button>
+        <button class="nav-item" data-view="history" type="button"><span class="nav-icon">≡</span> Service history</button>
+        <button class="nav-item" data-view="vehicle" type="button"><span class="nav-icon">⌁</span> Vehicle profile</button>
+        <div class="sidebar-spacer"></div>
+        <div class="side-label">DATA</div>
+        <button class="nav-item" id="backupBtn" type="button"><span class="nav-icon">⇧</span> Backup &amp; restore</button>
+        <button class="nav-item" id="calendarBtn" type="button"><span class="nav-icon">▦</span> Calendar reminders</button>
+        <div class="sidebar-note">
+          <span class="note-icon">i</span>
+          <p>Your records stay in this browser. Export a backup to move them to another device.</p>
+        </div>
+      </aside>
+
+      <main id="mainContent" tabindex="-1">
+        <section class="view active" id="view-overview">
+          <div class="page-heading">
+            <div><div class="eyebrow" id="todayLabel">GARAGE / TODAY</div><h1>Overview</h1><p class="page-subtitle">A clear view of what your E92 needs next.</p></div>
+            <button class="button primary" id="quickLogBtn" type="button"><span class="button-plus">＋</span> Log a service</button>
+          </div>
+          <section class="vehicle-banner">
+            <div class="vehicle-banner-copy">
+              <span class="vehicle-kicker"><span class="vehicle-pulse"></span> YOUR VEHICLE</span>
+              <h2 id="bannerVehicleName">BMW E92 325d</h2>
+              <p id="bannerSubline">M57 diesel <span class="bullet">·</span> Pre-LCI</p>
+              <div class="banner-meta"><span class="meta-pill" id="yearPill">Year not set</span><span class="meta-pill" id="platePill">Registration not set</span></div>
+            </div>
+            <div class="mileage-panel">
+              <span class="mileage-label">CURRENT ODOMETER</span>
+              <div class="mileage-value"><strong id="currentOdoDisplay">—</strong><span id="distanceUnitDisplay">mi</span></div>
+              <button class="text-button light" id="updateOdoBtn" type="button">Update reading <span>↗</span></button>
+            </div>
+            <div class="banner-orbit orbit-one"></div><div class="banner-orbit orbit-two"></div>
+            <div class="banner-grid"></div>
+          </section>
+
+          <div class="stat-grid">
+            <article class="stat-card"><div class="stat-top"><span class="stat-title">Needs attention</span><span class="stat-symbol urgent">!</span></div><div class="stat-number" id="attentionCount">0</div><div class="stat-foot" id="attentionFoot">No overdue items</div></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-title">Coming up</span><span class="stat-symbol upcoming">◷</span></div><div class="stat-number" id="upcomingCount">0</div><div class="stat-foot">Due within 30 days or 1,000 mi/km</div></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-title">Logged this year</span><span class="stat-symbol spend">£</span></div><div class="stat-number compact" id="yearSpend">£0</div><div class="stat-foot" id="yearSpendFoot">0 service records</div></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-title">Last service</span><span class="stat-symbol history-symbol">↺</span></div><div class="stat-number date-number" id="lastServiceDate">—</div><div class="stat-foot" id="lastServiceFoot">No services logged yet</div></article>
+          </div>
+
+          <div class="content-grid">
+            <section class="panel next-panel">
+              <div class="panel-heading"><div><span class="eyebrow">PRIORITY LIST</span><h2>Next up</h2></div><button class="link-button" data-go="plan" type="button">Full plan <span>→</span></button></div>
+              <div class="priority-list" id="priorityList"></div>
+            </section>
+            <section class="panel health-panel">
+              <div class="panel-heading"><div><span class="eyebrow">MAINTENANCE STATUS</span><h2>Plan health</h2></div><span class="health-ring" id="healthRing"><strong id="healthPercent">0%</strong></span></div>
+              <div class="health-meter"><div class="meter-track"><span id="healthMeterFill"></span></div><div class="meter-caption"><span id="configuredCount">0 configured</span><span id="totalItemsCount">0 items</span></div></div>
+              <p class="health-copy" id="healthCopy">Add service intervals to see your maintenance status.</p>
+              <button class="button secondary full" data-go="plan" type="button">Review maintenance plan <span>→</span></button>
+            </section>
+          </div>
+
+          <section class="panel recent-panel">
+            <div class="panel-heading"><div><span class="eyebrow">THE PAPER TRAIL</span><h2>Recent service history</h2></div><button class="link-button" data-go="history" type="button">View all <span>→</span></button></div>
+            <div class="table-wrap"><table><thead><tr><th>ITEM</th><th>DATE</th><th>ODOMETER</th><th>PROVIDER</th><th class="right">COST</th></tr></thead><tbody id="recentTable"></tbody></table></div>
+          </section>
+          <footer class="app-footer">E92 Servicebook <span>·</span> Personal maintenance records <span class="footer-right">No account. No tracking.</span></footer>
+        </section>
+
+        <section class="view" id="view-plan">
+          <div class="page-heading"><div><div class="eyebrow">YOUR SERVICE SCHEDULE</div><h1>Maintenance plan</h1><p class="page-subtitle">Set the mileage or time interval you want to track for each item.</p></div><button class="button primary" id="addTaskBtn" type="button"><span class="button-plus">＋</span> Add maintenance item</button></div>
+          <div class="plan-callout"><span class="callout-icon">↗</span><span>Intervals are yours to set. Use the schedule that suits your car, driving, and service history.</span><button class="callout-close" id="dismissCallout" type="button" aria-label="Dismiss">×</button></div>
+          <div class="toolbar"><div class="filter-tabs" id="planFilters"><button class="filter-tab selected" data-filter="all" type="button">All items <span id="filterAllCount">0</span></button><button class="filter-tab" data-filter="due" type="button">Due soon <span id="filterDueCount">0</span></button><button class="filter-tab" data-filter="unconfigured" type="button">Set interval <span id="filterUnconfiguredCount">0</span></button></div><label class="search-box"><span>⌕</span><input id="planSearch" type="search" placeholder="Find an item" aria-label="Search maintenance items"></label></div>
+          <div class="plan-list" id="planList"></div>
+          <footer class="app-footer">Intervals are editable at any time. Log each job to keep due calculations current.</footer>
+        </section>
+
+        <section class="view" id="view-history">
+          <div class="page-heading"><div><div class="eyebrow">RECORDS &amp; SPEND</div><h1>Service history</h1><p class="page-subtitle">Every repair, inspection, and routine service in one timeline.</p></div><button class="button primary" id="historyLogBtn" type="button"><span class="button-plus">＋</span> Log a service</button></div>
+          <div class="history-summary"><div><span class="summary-label">TOTAL RECORDS</span><strong id="historyRecordCount">0</strong></div><div><span class="summary-label">LIFETIME SPEND</span><strong id="lifetimeSpend">£0</strong></div><div><span class="summary-label">FILTER BY</span><select id="historyFilter" aria-label="Filter service history"><option value="all">All maintenance</option><option value="12">Past 12 months</option><option value="year">This year</option></select></div></div>
+          <div class="panel history-panel"><div class="history-list" id="historyList"></div></div>
+          <footer class="app-footer">Use Backup &amp; restore to keep a copy or move your records to another device.</footer>
+        </section>
+
+        <section class="view" id="view-vehicle">
+          <div class="page-heading"><div><div class="eyebrow">GARAGE DETAILS</div><h1>Vehicle profile</h1><p class="page-subtitle">Keep your vehicle details and odometer baseline up to date.</p></div><button class="button primary" id="saveVehicleBtn" type="button">Save changes</button></div>
+          <div class="profile-layout">
+            <section class="panel profile-card"><div class="panel-heading"><div><span class="eyebrow">VEHICLE IDENTITY</span><h2>Your BMW</h2></div><span class="profile-car-icon">E92</span></div>
+              <div class="form-grid">
+                <label class="field span-2"><span>Display name</span><input id="profileName" maxlength="50" value="BMW E92 325d"></label>
+                <label class="field"><span>Model year <small>optional</small></span><input id="profileYear" type="number" min="2000" max="2030" placeholder="e.g. 2008"></label>
+                <label class="field"><span>Registration <small>optional</small></span><input id="profileReg" maxlength="20" placeholder="Your registration"></label>
+                <label class="field"><span>Current odometer</span><div class="input-suffix"><input id="profileOdo" type="number" min="0" step="1" placeholder="Enter reading"><select id="profileUnit" aria-label="Distance unit"><option value="mi">mi</option><option value="km">km</option></select></div></label>
+                <label class="field"><span>Currency</span><select id="profileCurrency"><option value="GBP">GBP · £</option><option value="EUR">EUR · €</option><option value="USD">USD · $</option><option value="CAD">CAD · $</option><option value="AUD">AUD · $</option></select></label>
+                <label class="field"><span>Engine / notes</span><input id="profileEngine" maxlength="80" value="M57 diesel · Pre-LCI"></label>
+                <label class="field"><span>VIN <small>optional, stored locally</small></span><input id="profileVin" maxlength="24" placeholder="Vehicle identification number"></label>
+              </div>
+              <div class="profile-actions"><button class="button primary" id="saveVehicleBtn2" type="button">Save vehicle details</button><span class="save-status" id="profileSaveStatus"></span></div>
+            </section>
+            <section class="panel data-card"><span class="eyebrow">YOUR DATA</span><h2>Local by design</h2><p>Maintenance records are saved in this browser on this device. No account or cloud service is used.</p><div class="data-divider"></div><div class="data-detail"><span>Last backup</span><strong id="lastBackupLabel">Not backed up yet</strong></div><button class="button secondary full" id="profileBackupBtn" type="button">Export a backup <span>⇧</span></button><p class="small-note">To use the same records on iPhone and Mac, export a backup on one device and import it on the other.</p></section>
+          </div>
+        </section>
+      </main>
+    </div>
+    <nav class="mobile-nav" aria-label="Mobile navigation"><button class="mobile-nav-item active" data-view="overview" type="button"><span>◫</span>Home</button><button class="mobile-nav-item" data-view="plan" type="button"><span>◷</span>Plan</button><button class="mobile-nav-item" data-view="history" type="button"><span>≡</span>History</button><button class="mobile-nav-item" data-view="vehicle" type="button"><span>⌁</span>Vehicle</button></nav>
+  </div>
+
+  <dialog id="serviceDialog" class="modal">
+    <form id="serviceForm" method="dialog">
+      <div class="modal-head"><div><span class="eyebrow">SERVICE RECORD</span><h2 id="serviceDialogTitle">Log a service</h2></div><button type="button" class="modal-close" data-close="serviceDialog" aria-label="Close">×</button></div>
+      <input id="serviceId" type="hidden">
+      <div class="form-grid">
+        <label class="field span-2"><span>Maintenance item</span><select id="serviceTask" required></select></label>
+        <label class="field"><span>Date completed</span><input id="serviceDate" type="date" required></label>
+        <label class="field"><span>Odometer <small id="serviceUnitLabel">mi</small></span><input id="serviceOdo" type="number" min="0" step="1" placeholder="Reading at service"></label>
+        <label class="field"><span>Cost <small id="currencyLabel">GBP</small></span><input id="serviceCost" type="number" min="0" step="0.01" placeholder="0.00"></label>
+        <label class="field"><span>Workshop / provider</span><input id="serviceProvider" maxlength="80" placeholder="Optional"></label>
+        <label class="field span-2"><span>Parts / reference</span><input id="serviceParts" maxlength="140" placeholder="Part numbers, invoice reference, or work order"></label>
+        <label class="field span-2"><span>Notes</span><textarea id="serviceNotes" rows="3" maxlength="1000" placeholder="What was done? Any follow-up? "></textarea></label>
+      </div>
+      <div class="modal-actions"><button type="button" class="button quiet" data-close="serviceDialog">Cancel</button><button type="submit" class="button primary">Save service record</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="taskDialog" class="modal">
+    <form id="taskForm" method="dialog">
+      <div class="modal-head"><div><span class="eyebrow">MAINTENANCE PLAN</span><h2 id="taskDialogTitle">Add maintenance item</h2></div><button type="button" class="modal-close" data-close="taskDialog" aria-label="Close">×</button></div>
+      <input id="taskId" type="hidden">
+      <div class="form-grid">
+        <label class="field span-2"><span>Item name</span><input id="taskName" required maxlength="70" placeholder="e.g. Coolant change"></label>
+        <label class="field"><span>Category</span><select id="taskCategory"><option>Engine</option><option>Fluids</option><option>Brakes</option><option>Tyres &amp; wheels</option><option>Transmission</option><option>Exhaust &amp; emissions</option><option>Electrical</option><option>Inspection</option><option>Other</option></select></label>
+        <label class="field"><span>Track every</span><div class="input-suffix"><input id="taskIntervalKm" type="number" min="1" step="100" placeholder="Optional"><span id="taskUnitSuffix">mi</span></div></label>
+        <label class="field"><span>Or every (time)</span><div class="input-suffix"><input id="taskIntervalMonths" type="number" min="1" step="1" placeholder="Optional"><span>months</span></div></label>
+        <label class="field"><span>Alert me early</span><div class="input-suffix"><input id="taskLeadKm" type="number" min="0" step="100" placeholder="1,000"><span id="taskLeadUnit">mi</span></div></label>
+        <label class="field span-2"><span>Plan notes <small>optional</small></span><textarea id="taskNotes" rows="2" maxlength="500" placeholder="Your preferred interval, specification, or reminders"></textarea></label>
+      </div>
+      <p class="modal-hint">Set a mileage interval, a time interval, or both. The item is due when either interval is reached.</p>
+      <div class="modal-actions"><button type="button" id="removeTaskBtn" class="danger-button" hidden>Remove from plan</button><button type="button" class="button quiet" data-close="taskDialog">Cancel</button><button type="submit" class="button primary">Save plan item</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="odoDialog" class="modal small-modal">
+    <form id="odoForm" method="dialog">
+      <div class="modal-head"><div><span class="eyebrow">ODOMETER UPDATE</span><h2>Update reading</h2></div><button type="button" class="modal-close" data-close="odoDialog" aria-label="Close">×</button></div>
+      <label class="field"><span>Current odometer (<b id="odoUnitLabel">mi</b>)</span><input id="odoInput" type="number" min="0" step="1" required placeholder="Enter current reading"></label>
+      <p class="modal-hint">Updating the reading refreshes mileage-based due dates.</p>
+      <div class="modal-actions"><button type="button" class="button quiet" data-close="odoDialog">Cancel</button><button type="submit" class="button primary">Update reading</button></div>
+    </form>
+  </dialog>
+
+  <input id="importInput" type="file" accept="application/json,.json" hidden>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js" defer></script>
+</body>
+</html>
