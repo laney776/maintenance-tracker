@@ -19,13 +19,13 @@ The starter list contains common maintenance categories, but it intentionally do
 
 ## Install on iPhone
 
-The files need to be available from an HTTPS website before iPhone Safari can install the app and enable offline caching. After the app is hosted:
+Open the live app at <https://laney776.github.io/maintenance-tracker/>.
 
-1. Open its HTTPS address in **Safari** on the iPhone.
+1. Open the link in **Safari** on the iPhone.
 2. Tap **Share**, then **Add to Home Screen**.
 3. Launch **E92 Servicebook** from the Home Screen.
 
-On Mac, open the same address in a browser. It can also be added to the Dock in recent versions of macOS Safari.
+On Mac, open the same address in Safari. If available, use **File → Add to Dock** to install it as a web app.
 
 ## Records and privacy
 
@@ -33,6 +33,6 @@ Records are saved locally in the browser on each device. This static app does no
 
 Date reminders can be exported as an `.ics` calendar file once an item has a time interval and a service baseline. Mileage reminders appear in the app when you update the odometer. The app does not send background push notifications.
 
-## Host the files
+## Hosting
 
-Publish the contents of this folder as a static website at an HTTPS address. Keep the directory structure intact, including `assets/`, `manifest.json`, and `sw.js`. No server-side code, database, analytics, or API key is required.
+This app is hosted as a static website. Its files are served over HTTPS; no server-side code, database, analytics, or API key is used.
